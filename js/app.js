@@ -164,7 +164,7 @@ function cardHTML(b) {
       </div>
     </div>
     ${note ? `<div class="card-note visible">📝 ${note}</div>` : '<div class="card-note"></div>'}
-    <textarea class="note-input" placeholder="Add a note..." rows="2" data-url="${b.url}" onblur="saveNote(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveNote(this)}">${note}</textarea>
+    <textarea class="note-input" placeholder="Add a note..." rows="2" data-url="${b.url}" oninput="persistDraft(this)" onblur="saveNote(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveNote(this)}">${note}</textarea>
   </div>`;
 }
 
@@ -181,11 +181,23 @@ function toggleNote(btn) {
   if (input.classList.contains('visible')) input.focus();
 }
 
-function saveNote(textarea) {
+function setNoteValue(url, value) {
+  if (value) {
+    notes[url] = value;
+  } else {
+    delete notes[url];
+  }
+}
+
+function persistDraft(textarea) {
   const url = textarea.dataset.url;
   const val = textarea.value.trim();
-  if (val) { notes[url] = val; } else { delete notes[url]; }
+  setNoteValue(url, val);
   persistNotes();
+}
+
+function saveNote(textarea) {
+  persistDraft(textarea);
   textarea.classList.remove('visible');
   render();
 }
