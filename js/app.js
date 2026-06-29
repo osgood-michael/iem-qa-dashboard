@@ -47,8 +47,28 @@ const BOOKMARKS = [
   { title: "SAP Concur", url: "https://www.concursolutions.com/nui/signin?targetURL=%2Fhome", category: "Finance & Expenses", favicon: "https://www.google.com/s2/favicons?domain=concursolutions.com&sz=64" }
 ];
 
-const notes = {};
+const NOTES_STORAGE_KEY = "iem-qa-dashboard-notes";
+let notes = loadNotes();
 let activeFilter = "All";
+
+function loadNotes() {
+  try {
+    const raw = localStorage.getItem(NOTES_STORAGE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function persistNotes() {
+  try {
+    localStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(notes));
+  } catch {
+    // Ignore storage failures (for example, blocked storage in private mode).
+  }
+}
 
 function getHost(url) {
   try { return new URL(url).hostname.replace('www.', ''); } catch { return url; }
@@ -165,6 +185,7 @@ function saveNote(textarea) {
   const url = textarea.dataset.url;
   const val = textarea.value.trim();
   if (val) { notes[url] = val; } else { delete notes[url]; }
+  persistNotes();
   textarea.classList.remove('visible');
   render();
 }
