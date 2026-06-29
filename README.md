@@ -1,6 +1,6 @@
-# IEM Bookmark Dashboard
+# IEM QA Dashboard
 
-An internal bookmark dashboard for quick access to IEM tools and services.
+An internal QA dashboard for quick access to IEM tools and services.
 
 ## Structure
 
