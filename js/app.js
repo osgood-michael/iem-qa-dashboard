@@ -213,5 +213,18 @@ function copyUrl(url, btn) {
   });
 }
 
-document.getElementById('searchInput').addEventListener('input', render);
+const searchInput = document.getElementById('searchInput');
+
+function resetViewState() {
+  activeFilter = "All";
+  searchInput.value = "";
+}
+
+searchInput.addEventListener('input', render);
+window.addEventListener('pageshow', () => {
+  resetViewState();
+  render();
+});
+
+resetViewState();
 render();
